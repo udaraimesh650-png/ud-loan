@@ -1,0 +1,8 @@
+{
+  "name": "UD Loan Calculator",
+  "description": "UD Loan Calculator with Loan Calculator, Pay Sheet Calculator, and Application download center.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
