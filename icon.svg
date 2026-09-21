@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071b30" />
+      <stop offset="40%" stop-color="#0a2540" />
+      <stop offset="100%" stop-color="#12396b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Background with rounded rectangle for icon -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  
+  <!-- Outer golden border stroke -->
+  <rect x="20" y="20" width="472" height="472" rx="96" fill="none" stroke="url(#goldGrad)" stroke-width="8" stroke-opacity="0.85" />
+  
+  <!-- Subtle circular grid / radar effect in background -->
+  <circle cx="256" cy="230" r="180" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.15" stroke-dasharray="6 6" />
+  <circle cx="256" cy="230" r="130" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.2" />
+
+  <!-- Center Badge Plate -->
+  <g filter="url(#shadow)">
+    <rect x="110" y="90" width="292" height="230" rx="36" fill="#0b223d" stroke="url(#goldGrad)" stroke-width="5" />
+    
+    <!-- Bold UD Monogram -->
+    <text x="256" y="240" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="140" 
+          font-weight="900" 
+          text-anchor="middle" 
+          fill="url(#goldGrad)" 
+          letter-spacing="4">UD</text>
+  </g>
+
+  <!-- Mini Calculator / Currency Symbols on sides -->
+  <g fill="#38bdf8" opacity="0.8">
+    <!-- Percent sign top right -->
+    <circle cx="360" cy="130" r="8" />
+    <line x1="352" y1="156" x2="376" y2="124" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
+    <circle cx="368" cy="150" r="8" />
+  </g>
+
+  <!-- Bottom LOAN CALCULATOR Pill / Banner -->
+  <g filter="url(#shadow)">
+    <rect x="76" y="356" width="360" height="74" rx="24" fill="url(#cyanGrad)" stroke="#ffffff" stroke-width="2.5" stroke-opacity="0.6" />
+    <text x="256" y="403" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="28" 
+          font-weight="900" 
+          text-anchor="middle" 
+          fill="#ffffff" 
+          letter-spacing="3">LOAN CALCULATOR</text>
+  </g>
+</svg>
