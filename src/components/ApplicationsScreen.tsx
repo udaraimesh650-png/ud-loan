@@ -159,9 +159,16 @@ export const ApplicationsScreen: React.FC<ApplicationsScreenProps> = ({ onGoHome
 
 
   // Open PDF
-  const handleOpenPdf = (app: ApplicationDocument) => {
-    window.location.href = app.pdfPath;
-  };
+  const handleOpenPdf = (app: ApplicationDocument) => { 
+  alert(app.pdfPath);
+  const link = document.createElement('a');
+  link.href = app.pdfPath;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
   // Trigger Print from inside modal
   const handlePrint = () => {
@@ -259,15 +266,17 @@ export const ApplicationsScreen: React.FC<ApplicationsScreenProps> = ({ onGoHome
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               
               {/* OPEN PDF */}
-              <button
-                id={`btn-open-pdf-${app.id}`}
-                type="button"
-                onClick={() => handleOpenPdf(app)}
-                className="flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-gray-800 shadow-md transition hover:scale-105 hover:shadow-lg"
+ 		<a
+  			id={`btn-open-pdf-${app.id}`}
+ 			 href={app.pdfPath}
+  			target="_blank"
+  			rel="noopener noreferrer"
+  			className="flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-gray-800 shadow-md transition hover:scale-105 hover:shadow-lg"
+
               >
                 <Eye size={20} />
                 <span>OPEN PDF</span>
-              </button>
+              </a>
 
               {/* DOWNLOAD PDF */}
               <button

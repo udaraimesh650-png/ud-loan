@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Home, AlertTriangle, ChevronDown, Calculator, ArrowRight, ExternalLink } from 'lucide-react';
 import { calculateReachableLoanAmount, formatLKR } from '../utils/loanMath';
 import { useLoanConditions, getDynamicPropertyLoanRate } from '../utils/loanConditionsStorage';
@@ -18,67 +18,6 @@ interface PaySheetCalculatorScreenProps {
 }
 
 const PAYSHEET_STORAGE_KEY = 'ud_paysheet_saved_data';
-const getMonthsUntilAge60 = (
-  birthdayValue: string
-): number | null => {
-  if (!birthdayValue) return null;
-
-  const parts = birthdayValue.split('/');
-
-  if (parts.length !== 3) {
-    return null;
-  }
-
-  const year = Number(parts[0]);
-  const month = Number(parts[1]);
-  const day = Number(parts[2]);
-
-  if (
-    !Number.isInteger(year) ||
-    !Number.isInteger(month) ||
-    !Number.isInteger(day) ||
-    year < 1900 ||
-    month < 1 ||
-    month > 12 ||
-    day < 1 ||
-    day > 31
-  ) {
-    return null;
-  }
-
-  const dob = new Date(year, month - 1, day);
-
-  if (
-    dob.getFullYear() !== year ||
-    dob.getMonth() !== month - 1 ||
-    dob.getDate() !== day
-  ) {
-    return null;
-  }
-
-  const today = new Date();
-
-  const age60Date = new Date(dob);
-
-  age60Date.setFullYear(
-    age60Date.getFullYear() + 60
-  );
-
-  if (today >= age60Date) {
-    return 0;
-  }
-
-  let months =
-    (age60Date.getFullYear() - today.getFullYear()) * 12 +
-    (age60Date.getMonth() - today.getMonth());
-
-  if (age60Date.getDate() < today.getDate()) {
-    months -= 1;
-  }
-
-  return Math.max(0, months);
-};
-
 
 const getInitialSavedPaySheet = () => {
   try {
@@ -125,10 +64,6 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
     initialData?.basicSalary || ''
   );
 
-  const [birthday, setBirthday] = useState<string>(
-    initialData?.birthday || ''
-  );
-
   const [deduction1, setDeduction1] = useState<string>(initialData?.deduction1 || '');
   const [deduction2, setDeduction2] = useState<string>(initialData?.deduction2 || '');
   const [deduction3, setDeduction3] = useState<string>(initialData?.deduction3 || '');
@@ -158,7 +93,6 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
           selectedLoanType,
           guaranteeLoanYears,
           basicSalary,
-          birthday,
           deduction1,
           deduction2,
           deduction3,
@@ -178,7 +112,6 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
     selectedLoanType,
     guaranteeLoanYears,
     basicSalary,
-    birthday,
     deduction1,
     deduction2,
     deduction3,
@@ -191,11 +124,6 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
     deduction8_2,
   ]);
 
-  const age60RemainingMonths = useMemo(
-    () => getMonthsUntilAge60(birthday),
-    [birthday]
-  );
-
   const currentLoanConfig = useMemo(() => {
     if (!selectedLoanType) return null;
 
@@ -204,12 +132,7 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
     if (!cond) return null;
 
     if (selectedLoanType === 'property-loan') {
-      const baseMonths = propertyLoanYears * 12;
-
-      const months =
-        age60RemainingMonths !== null
-          ? Math.min(baseMonths, age60RemainingMonths)
-          : baseMonths;
+      const months = propertyLoanYears * 12;
 
       const dynamicRate = getDynamicPropertyLoanRate(
         months,
@@ -242,13 +165,7 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
       if (!tiers) {
         return {
           name: cond.name,
-          maxMonths:
-            age60RemainingMonths !== null
-              ? Math.min(
-                  cond.maxPeriodMonths,
-                  age60RemainingMonths
-                )
-              : cond.maxPeriodMonths,
+          maxMonths: cond.maxPeriodMonths,
           rate: cond.defaultRate,
           maxLimit: cond.maxLimit,
         };
@@ -257,13 +174,7 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
       if (years <= tiers.tier1MaxYears) {
         return {
           name: cond.name,
-          maxMonths:
-            age60RemainingMonths !== null
-              ? Math.min(
-                  tiers.tier1MaxPeriodMonths,
-                  age60RemainingMonths
-                )
-              : tiers.tier1MaxPeriodMonths,
+          maxMonths: tiers.tier1MaxPeriodMonths,
           rate: cond.defaultRate,
           maxLimit: tiers.tier1MaxLimit,
         };
@@ -272,13 +183,7 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
       if (years <= tiers.tier2MaxYears) {
         return {
           name: cond.name,
-          maxMonths:
-            age60RemainingMonths !== null
-              ? Math.min(
-                  tiers.tier2MaxPeriodMonths,
-                  age60RemainingMonths
-                )
-              : tiers.tier2MaxPeriodMonths,
+          maxMonths: tiers.tier2MaxPeriodMonths,
           rate: cond.defaultRate,
           maxLimit: tiers.tier2MaxLimit,
         };
@@ -286,13 +191,7 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
 
       return {
         name: cond.name,
-        maxMonths:
-          age60RemainingMonths !== null
-            ? Math.min(
-                tiers.tier3MaxPeriodMonths,
-                age60RemainingMonths
-              )
-            : tiers.tier3MaxPeriodMonths,
+        maxMonths: tiers.tier3MaxPeriodMonths,
         rate: cond.defaultRate,
         maxLimit: tiers.tier3MaxLimit,
       };
@@ -300,13 +199,7 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
 
     return {
       name: cond.name,
-      maxMonths:
-        age60RemainingMonths !== null
-          ? Math.min(
-              cond.maxPeriodMonths,
-              age60RemainingMonths
-            )
-          : cond.maxPeriodMonths,
+      maxMonths: cond.maxPeriodMonths,
       rate: cond.defaultRate,
       maxLimit: cond.maxLimit,
     };
@@ -315,9 +208,9 @@ export const PaySheetCalculatorScreen: React.FC<PaySheetCalculatorScreenProps> =
     propertyLoanYears,
     guaranteeLoanYears,
     conditions,
-    age60RemainingMonths,
   ]);
-const isGuaranteeMembershipMissing =
+
+  const isGuaranteeMembershipMissing =
     selectedLoanType === 'guarantee-loan' &&
     guaranteeLoanYears.trim() === '';
 
@@ -556,7 +449,6 @@ const isGuaranteeMembershipMissing =
     setSelectedLoanType('');
     setGuaranteeLoanYears('');
     setBasicSalary('');
-    setBirthday('');
     setDeduction1('');
     setDeduction2('');
     setDeduction3('');
@@ -757,19 +649,19 @@ const isGuaranteeMembershipMissing =
 
               {isGuaranteeMembershipMissing ? (
                 <div className="text-[11px] font-bold text-amber-300 text-center">
-                  සාමාජිකත්ව කාල සීමාව ඇතුළත් කිරීම අනිවාර්යයි.
+                  ⚠ සාමාජිකත්ව කාල සීමාව ඇතුළත් කිරීම අනිවාර්යයි.
                 </div>
               ) : isGuaranteeMembershipInvalid ? (
                 <div className="text-[11px] font-bold text-red-300 text-center">
-                  කරුණාකර නිවැරදි සාමාජිකත්ව කාල සීමාවක් ඇතුළත් කරන්න.
+                  ⚠ කරුණාකර නිවැරදි සාමාජිකත්ව කාල සීමාවක් ඇතුළත් කරන්න.
                 </div>
               ) : (
                 <div className="text-[11px] font-bold text-cyan-200 text-center">
                   {parsedGuaranteeLoanYears <= 2
-                    ? '0 - 2 Years - Max Rs. 500,000 / 60 Months'
+                    ? '0–2 Years → Max Rs. 500,000 / 60 Months'
                     : parsedGuaranteeLoanYears <= 5
-                    ? '>2-5 Years - Max Rs. 800,000 / 84 Months'
-                    : '>5 Years - Max Rs. 1,000,000 / 84 Months'}
+                    ? '>2–5 Years → Max Rs. 800,000 / 84 Months'
+                    : '>5 Years → Max Rs. 1,000,000 / 84 Months'}
                 </div>
               )}
             </div>
@@ -824,66 +716,6 @@ const isGuaranteeMembershipMissing =
           </div>
         </div>
 
-
-        <div className="flex flex-col items-center text-center gap-1.5">
-          <label
-            htmlFor="input-paysheet-birthday"
-            className="text-sm font-black text-white tracking-wider uppercase drop-shadow-sm flex items-center gap-1.5 justify-center flex-wrap"
-          >
-            <span>BIRTHDAY</span>
-
-            <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (YYYY/MM/DD)
-            </span>
-          </label>
-
-          <div className="relative w-full">
-            <input
-              id="input-paysheet-birthday"
-              type="text"
-              inputMode="numeric"
-              value={birthday}
-              onChange={(e) => {
-                let value = e.target.value.replace(
-                  /[^0-9]/g,
-                  ''
-                );
-
-                if (value.length > 8) {
-                  value = value.slice(0, 8);
-                }
-
-                if (value.length > 4) {
-                  value =
-                    value.slice(0, 4) +
-                    '/' +
-                    value.slice(4);
-                }
-
-                if (value.length > 7) {
-                  value =
-                    value.slice(0, 7) +
-                    '/' +
-                    value.slice(7);
-                }
-
-                setBirthday(value);
-              }}
-              placeholder="YYYY/MM/DD"
-              maxLength={10}
-              className="w-full py-3.5 px-5 rounded-full bg-white text-slate-900 font-black text-base text-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_2px_6px_rgba(0,0,0,0.2)] border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-            />
-          </div>
-
-          {birthday &&
-            age60RemainingMonths !== null && (
-              <div className="text-[11px] font-bold text-cyan-200 text-center">
-                {age60RemainingMonths > 0
-                  ? `Age 60 remaining: ${age60RemainingMonths} Months`
-                  : 'Age 60 reached. No repayment period is available.'}
-              </div>
-            )}
-        </div>
         <div className="flex flex-col items-center text-center gap-1.5">
           <label className="text-sm font-black text-white tracking-wider uppercase drop-shadow-sm flex items-center gap-1.5 justify-center flex-wrap">
             <span>40% OF BASIC SALARY/GROSS SALARY</span>
@@ -928,7 +760,7 @@ const isGuaranteeMembershipMissing =
             </span>
 
             <span className="text-[10px] font-medium text-amber-100/90">
-              (අවම වශයෙන් එක් අඩුකිරීමක් හෝ සම්පූර්ණ කළ යුතුය)
+              (අවම වශයෙන් එක් අඩුකිරීම් ක්ෂේත්‍රයක් හෝ සම්පූර්ණ කළ යුතුය)
             </span>
           </div>
 
@@ -1232,7 +1064,7 @@ const isGuaranteeMembershipMissing =
             {hasAtLeastOneDeduction
               ? formatLKR(totalDeductions)
               : parsedBasic > 0
-              ? '(අවම වශයෙන් එක් අඩුකිරීමක් සම්පූර්ණ කරන්න)'
+              ? '(අවම වශයෙන් 1ක් ඇතුළත් කරන්න)'
               : '-'}
           </span>
         </div>
@@ -1242,13 +1074,13 @@ const isGuaranteeMembershipMissing =
             <span>BALANCE AFTER DEDUCTION</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (අඩුකිරීම් වලින් පසු ඉතිරි ශේෂය)
+              (අඩුකිරීම්වලින් පසු ඉතිරි ශේෂය)
             </span>
 
             {parsedBasic > 0 &&
               !hasAtLeastOneDeduction && (
                 <span className="text-amber-300 text-xs font-semibold">
-                  (අඩුකිරීම් ඇතුළත් කරන්න)
+                  (අඩුකිරීමක් ඇතුළත් කරන්න)
                 </span>
               )}
 
@@ -1316,11 +1148,11 @@ const isGuaranteeMembershipMissing =
               <div className="flex flex-col items-center justify-center px-2 py-1 text-center">
                 <span className="text-amber-300 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                  අඩුකිරීම් සිදුකර ණය ලබාගත නොහැක
+                  අඩුකිරීම් කිසිවක් ඇතුළත් කර නොමැත
                 </span>
 
                 <span className="text-[11px] font-semibold text-amber-200/90 mt-0.5">
-                  (කරුණාකර 40% අඩුකිරීම් තුළ අවම වශයෙන් එක් අඩුකිරීමක් සම්පූර්ණ කරන්න)
+                  (කරුණාකර 40% අඩුකිරීම් අතුරින් අවම වශයෙන් එකක් හෝ ඇතුළත් කරන්න)
                 </span>
               </div>
             ) : parsedBasic > 0 &&
@@ -1332,7 +1164,7 @@ const isGuaranteeMembershipMissing =
                 </span>
 
                 <span className="text-xs sm:text-sm font-bold text-red-100/95 drop-shadow-xs mt-0.5">
-                  (ණය ලබාගත නොහැක)
+                  (ණය පහසුකම් ලබාගත නොහැක)
                 </span>
               </div>
             ) : selectedLoanType ===
@@ -1358,7 +1190,7 @@ const isGuaranteeMembershipMissing =
                 </span>
 
                 <span className="text-[11px] font-semibold text-red-100/90 mt-0.5">
-                  (0 හෝ ඊට වැඩි අගයක් ඇතුළත් කරන්න)
+                  (0 හෝ ඊට වැඩි වසරක් ඇතුළත් කරන්න)
                 </span>
               </div>
             ) : selectedLoanType &&
@@ -1377,7 +1209,7 @@ const isGuaranteeMembershipMissing =
                 </span>
 
                 <span className="text-[11px] font-semibold text-amber-200/90 mt-0.5">
-                  (කරුණාකර ඉහළින් ණය වර්ගය තෝරාගන්න)
+                  (කරුණාකර ඉහළින් අදාළ ණය වර්ගය තෝරාගන්න)
                 </span>
               </div>
             ) : (
@@ -1420,7 +1252,7 @@ const isGuaranteeMembershipMissing =
 
                 <div className="bg-[#0b1638]/90 border border-cyan-400/40 rounded-xl px-2 py-1.5 flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-tight">
-                    Rate (පොලී අනුපාතය)
+                    Rate (පොලී අනුපාතිකය)
                   </span>
 
                   <span className="text-xs sm:text-sm font-black text-amber-300">
@@ -1430,7 +1262,7 @@ const isGuaranteeMembershipMissing =
 
                 <div className="bg-[#0b1638]/90 border border-cyan-400/40 rounded-xl px-2 py-1.5 flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-tight">
-                    Period (කාල සීමාව)
+                    Period (කාලසීමාව)
                   </span>
 
                   <span className="text-xs sm:text-sm font-black text-cyan-300">
@@ -1559,12 +1391,3 @@ const isGuaranteeMembershipMissing =
     </div>
   );
 };
-
-
-
-
-
-
-
-
-

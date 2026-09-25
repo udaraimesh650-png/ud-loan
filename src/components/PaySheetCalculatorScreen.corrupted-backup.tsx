@@ -649,11 +649,11 @@ const isGuaranteeMembershipMissing =
             <span>LOAN TYPE</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (ණය වර්ගය)
+              (ණය �?ර�S�oය)
             </span>
 
             <span className="text-[11px] font-bold text-amber-300 bg-amber-950/70 border border-amber-400/60 px-2 py-0.5 rounded-full tracking-normal normal-case">
-              * අනිවාර්යයි (Required)
+              * �.න�'�?ාර�Sයය�' (Required)
             </span>
           </label>
 
@@ -678,7 +678,7 @@ const isGuaranteeMembershipMissing =
                 value=""
                 className="text-slate-400 font-bold"
               >
-                -- ණය වර්ගය තෝරන්න (Select Loan Type) * --
+                -- ණය �?ර�S�oය තෝරන�Sන (Select Loan Type) * --
               </option>
 
               {loanTypesList.map((type) => (
@@ -711,9 +711,9 @@ const isGuaranteeMembershipMissing =
                 htmlFor="input-guarantee-membership-years"
                 className="text-xs sm:text-sm font-black text-amber-200 tracking-wide"
               >
-                සාමාජිකත්ව කාල සීමාව
+                �fාමාජ�'�sත�S�? �sාල �f�"මා�?
                 <span className="ml-1 text-amber-300">
-                  (Years) * අනිවාර්යයි
+                  (Years) * �.න�'�?ාර�Sයය�'
                 </span>
               </label>
 
@@ -741,7 +741,7 @@ const isGuaranteeMembershipMissing =
                       setGuaranteeLoanYears(value);
                     }
                   }}
-                  placeholder="සාමාජිකත්ව කාලය (Years) *"
+                  placeholder="�fාමාජ�'�sත�S�? �sාලය (Years) *"
                   className={`w-full py-3 px-5 rounded-full bg-white text-slate-900 font-black text-sm text-center border-2 focus:outline-none focus:ring-2 ${
                     isGuaranteeMembershipMissing ||
                     isGuaranteeMembershipInvalid
@@ -757,11 +757,11 @@ const isGuaranteeMembershipMissing =
 
               {isGuaranteeMembershipMissing ? (
                 <div className="text-[11px] font-bold text-amber-300 text-center">
-                  සාමාජිකත්ව කාල සීමාව ඇතුළත් කිරීම අනිවාර්යයි.
+                  �s� �fාමාජ�'�sත�S�? �sාල �f�"මා�? �?ත�"�.ත�S �s�'ර�"ම �.න�'�?ාර�Sයය�'.
                 </div>
               ) : isGuaranteeMembershipInvalid ? (
                 <div className="text-[11px] font-bold text-red-300 text-center">
-                  කරුණාකර නිවැරදි සාමාජිකත්ව කාල සීමාවක් ඇතුළත් කරන්න.
+                  �s� �sර�"ණා�sර න�'�?ැරද�' �fාමාජ�'�sත�S�? �sාල �f�"මා�?�s�S �?ත�"�.ත�S �sරන�Sන.
                 </div>
               ) : (
                 <div className="text-[11px] font-bold text-cyan-200 text-center">
@@ -769,7 +769,7 @@ const isGuaranteeMembershipMissing =
                     ? '0 - 2 Years - Max Rs. 500,000 / 60 Months'
                     : parsedGuaranteeLoanYears <= 5
                     ? '>2-5 Years - Max Rs. 800,000 / 84 Months'
-                    : '>5 Years - Max Rs. 1,000,000 / 84 Months'}
+                    : '>5 Years �?' Max Rs. 1,000,000 / 84 Months'}
                 </div>
               )}
             </div>
@@ -780,7 +780,7 @@ const isGuaranteeMembershipMissing =
               <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
 
               <span>
-                ණය මුදල ගණනය කිරීම සඳහා ණය වර්ගය (Loan Type) තෝරාගන්න.
+                ණය ම�"දල �oණනය �s�'ර�"ම �fඳ�"ා ණය �?ර�S�oය (Loan Type) තෝරා�oන�Sන.
               </span>
             </div>
           )}
@@ -791,7 +791,7 @@ const isGuaranteeMembershipMissing =
             <span>BASIC SALARY/GROSS SALARY</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (මූලික වැටුප / දළ වැටුප)
+              (ම�-ල�'�s �?ැට�"ප / ද�. �?ැට�"ප)
             </span>
           </label>
 
@@ -889,7 +889,7 @@ const isGuaranteeMembershipMissing =
             <span>40% OF BASIC SALARY/GROSS SALARY</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (මූලික / දළ වැටුපෙන් 40% ක සීමාව)
+              (ම�-ල�'�s / ද�. �?ැට�"ප�Tන�S 40% �s �f�"මා�?)
             </span>
           </label>
 
@@ -908,7 +908,7 @@ const isGuaranteeMembershipMissing =
             <span>DEDUCTION OF 40%</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (40% සීමාව තුළ දැනට පවතින අඩුකිරීම්)
+              (40% �f�"මා�? ත�"�. දැනට ප�?ත�'න �.ඩ�"�s�'ර�"ම�S)
             </span>
           </label>
 
@@ -928,7 +928,7 @@ const isGuaranteeMembershipMissing =
             </span>
 
             <span className="text-[10px] font-medium text-amber-100/90">
-              (අවම වශයෙන් එක් අඩුකිරීමක් හෝ සම්පූර්ණ කළ යුතුය)
+              (�.�?ම �?ශය�Tන�S �'�s�S �.ඩ�"�s�'ර�"ම�S �s�S�,�sත�S�?�රය�s�S �"ෝ �fම�Sප�-ර�Sණ �s�. ය�"ත�"ය)
             </span>
           </div>
 
@@ -1232,7 +1232,7 @@ const isGuaranteeMembershipMissing =
             {hasAtLeastOneDeduction
               ? formatLKR(totalDeductions)
               : parsedBasic > 0
-              ? '(අවම වශයෙන් එක් අඩුකිරීමක් සම්පූර්ණ කරන්න)'
+              ? '(�.�?ම �?ශය�Tන�S 1�s�S �?ත�"�.ත�S �sරන�Sන)'
               : '-'}
           </span>
         </div>
@@ -1242,13 +1242,13 @@ const isGuaranteeMembershipMissing =
             <span>BALANCE AFTER DEDUCTION</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (අඩුකිරීම් වලින් පසු ඉතිරි ශේෂය)
+              (�.ඩ�"�s�'ර�"ම�S�?ල�'න�S ප�f�" �?ත�'ර�' ශ�s�,ය)
             </span>
 
             {parsedBasic > 0 &&
               !hasAtLeastOneDeduction && (
                 <span className="text-amber-300 text-xs font-semibold">
-                  (අඩුකිරීම් ඇතුළත් කරන්න)
+                  (�.ඩ�"�s�'ර�"ම�s�S �?ත�"�.ත�S �sරන�Sන)
                 </span>
               )}
 
@@ -1285,7 +1285,7 @@ const isGuaranteeMembershipMissing =
             <span>REACHABLE LOAN AMOUNT</span>
 
             <span className="text-xs sm:text-sm font-bold text-emerald-300 normal-case">
-              (ලබාගත හැකි උපරිම ණය ප්‍රමාණය)
+              (ලබා�oත �"ැ�s�' �<පර�'ම ණය ප�S�?�රමාණය)
             </span>
           </label>
 
@@ -1316,11 +1316,11 @@ const isGuaranteeMembershipMissing =
               <div className="flex flex-col items-center justify-center px-2 py-1 text-center">
                 <span className="text-amber-300 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                  අඩුකිරීම් සිදුකර ණය ලබාගත නොහැක
+                  �.ඩ�"�s�'ර�"ම�S �s�'�f�'�?�s�S �?ත�"�.ත�S �sර න�oමැත
                 </span>
 
                 <span className="text-[11px] font-semibold text-amber-200/90 mt-0.5">
-                  (කරුණාකර 40% අඩුකිරීම් තුළ අවම වශයෙන් එක් අඩුකිරීමක් සම්පූර්ණ කරන්න)
+                  (�sර�"ණා�sර 40% �.ඩ�"�s�'ර�"ම�S �.ත�"ර�'න�S �.�?ම �?ශය�Tන�S �'�s�s�S �"ෝ �?ත�"�.ත�S �sරන�Sන)
                 </span>
               </div>
             ) : parsedBasic > 0 &&
@@ -1332,7 +1332,7 @@ const isGuaranteeMembershipMissing =
                 </span>
 
                 <span className="text-xs sm:text-sm font-bold text-red-100/95 drop-shadow-xs mt-0.5">
-                  (ණය ලබාගත නොහැක)
+                  (ණය ප�"�f�"�sම�S ලබා�oත න�o�"ැ�s)
                 </span>
               </div>
             ) : selectedLoanType ===
@@ -1341,11 +1341,11 @@ const isGuaranteeMembershipMissing =
               <div className="flex flex-col items-center justify-center px-2 py-1 text-center">
                 <span className="text-amber-300 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                  සාමාජිකත්ව කාල සීමාව ඇතුළත් කරන්න
+                  �fාමාජ�'�sත�S�? �sාල �f�"මා�? �?ත�"�.ත�S �sරන�Sන
                 </span>
 
                 <span className="text-[11px] font-semibold text-amber-200/90 mt-0.5">
-                  (Guarantee Loan සඳහා Membership Duration අනිවාර්යයි)
+                  (Guarantee Loan �fඳ�"ා Membership Duration �.න�'�?ාර�Sයය�')
                 </span>
               </div>
             ) : selectedLoanType ===
@@ -1354,11 +1354,11 @@ const isGuaranteeMembershipMissing =
               <div className="flex flex-col items-center justify-center px-2 py-1 text-center">
                 <span className="text-red-200 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-red-300 shrink-0" />
-                  සාමාජිකත්ව කාල සීමාව නිවැරදි නොවේ
+                  �fාමාජ�'�sත�S�? �sාල �f�"මා�? න�'�?ැරද�' න�o�?�s
                 </span>
 
                 <span className="text-[11px] font-semibold text-red-100/90 mt-0.5">
-                  (0 හෝ ඊට වැඩි අගයක් ඇතුළත් කරන්න)
+                  (0 �"ෝ �Sට �?ැඩ�' �?�fර�s�S �?ත�"�.ත�S �sරන�Sන)
                 </span>
               </div>
             ) : selectedLoanType &&
@@ -1373,11 +1373,11 @@ const isGuaranteeMembershipMissing =
               <div className="flex flex-col items-center justify-center px-2 py-1 text-center">
                 <span className="text-amber-300 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                  ණය වර්ගය තෝරාගෙන නොමැත
+                  ණය �?ර�S�oය තෝරා�o�Tන න�oමැත
                 </span>
 
                 <span className="text-[11px] font-semibold text-amber-200/90 mt-0.5">
-                  (කරුණාකර ඉහළින් ණය වර්ගය තෝරාගන්න)
+                  (�sර�"ණා�sර �?�"�.�'න�S �.දා�. ණය �?ර�S�oය තෝරා�oන�Sන)
                 </span>
               </div>
             ) : (
@@ -1396,7 +1396,7 @@ const isGuaranteeMembershipMissing =
               <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
                 <div className="bg-[#0b1638]/90 border border-cyan-400/40 rounded-xl px-2 py-1.5 flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-tight">
-                    Installment (මාසික වාරිකය)
+                    Installment (මා�f�'�s �?ාර�'�sය)
                   </span>
 
                   <span className="text-xs sm:text-sm font-black text-white">
@@ -1408,7 +1408,7 @@ const isGuaranteeMembershipMissing =
 
                 <div className="bg-[#0b1638]/90 border border-cyan-400/40 rounded-xl px-2 py-1.5 flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-tight">
-                    Interest (මාසික පොලිය)
+                    Interest (මා�f�'�s ප�oල�'ය)
                   </span>
 
                   <span className="text-xs sm:text-sm font-black text-white">
@@ -1420,7 +1420,7 @@ const isGuaranteeMembershipMissing =
 
                 <div className="bg-[#0b1638]/90 border border-cyan-400/40 rounded-xl px-2 py-1.5 flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-tight">
-                    Rate (පොලී අනුපාතය)
+                    Rate (ප�oල�" �.න�"පාත�'�sය)
                   </span>
 
                   <span className="text-xs sm:text-sm font-black text-amber-300">
@@ -1430,7 +1430,7 @@ const isGuaranteeMembershipMissing =
 
                 <div className="bg-[#0b1638]/90 border border-cyan-400/40 rounded-xl px-2 py-1.5 flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-tight">
-                    Period (කාල සීමාව)
+                    Period (�sාල�f�"මා�?)
                   </span>
 
                   <span className="text-xs sm:text-sm font-black text-cyan-300">
@@ -1470,7 +1470,7 @@ const isGuaranteeMembershipMissing =
                 <Calculator className="w-4 h-4 text-slate-950 shrink-0" />
 
                 <span>
-                  LOAN CALCULATOR වෙත යොමුවන්න
+                  LOAN CALCULATOR �?�Tත ය�oම�"�?න�Sන
                 </span>
 
                 <ArrowRight className="w-4 h-4 text-slate-950 shrink-0" />
@@ -1483,7 +1483,7 @@ const isGuaranteeMembershipMissing =
             <span>PAY SHEET DEDUCTION OF MONTH</span>
 
             <span className="text-xs font-semibold text-cyan-200 normal-case">
-              (වැටුප් පත්‍රිකාවෙන් මාසික අඩුකිරීම)
+              (�?ැට�"ප�S පත�S�?�ර�'�sා�?�Tන�S මා�f�'�s �.ඩ�"�s�'ර�"ම)
             </span>
           </label>
 
@@ -1559,8 +1559,6 @@ const isGuaranteeMembershipMissing =
     </div>
   );
 };
-
-
 
 
 

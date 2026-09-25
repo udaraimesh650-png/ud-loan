@@ -5,7 +5,8 @@ import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
-  const base = '/ud-loan/';
+  const isElectron = process.env.ELECTRON_BUILD === 'true' || process.env.npm_lifecycle_event === 'electron:build';
+  const base = isElectron ? './' : '/ud-loan/';
 
   return {
     base,
@@ -28,7 +29,7 @@ export default defineConfig(() => {
         },
 
         manifest: {
-          id: '/ud-loan/',
+          id: isElectron ? './' : '/ud-loan/',
           name: 'UD Loan Calculator',
           short_name: 'UD Loan Calc',
           description:
@@ -37,24 +38,30 @@ export default defineConfig(() => {
           background_color: '#0a2540',
           display: 'standalone',
           orientation: 'portrait',
-          start_url: '/ud-loan/',
-          scope: '/ud-loan/',
+          start_url: isElectron ? './' : '/ud-loan/',
+          scope: isElectron ? './' : '/ud-loan/',
 
           icons: [
             {
-              src: '/ud-loan/pwa-192x192.png',
+              src: isElectron
+                ? './pwa-192x192.png'
+                : '/ud-loan/pwa-192x192.png',
               sizes: '192x192',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/ud-loan/pwa-512x512.png',
+              src: isElectron
+                ? './pwa-512x512.png'
+                : '/ud-loan/pwa-512x512.png',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/ud-loan/pwa-maskable-512x512.png',
+              src: isElectron
+                ? './pwa-maskable-512x512.png'
+                : '/ud-loan/pwa-maskable-512x512.png',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'maskable',
@@ -63,7 +70,7 @@ export default defineConfig(() => {
         },
 
         devOptions: {
-          enabled: true,
+          enabled: !isElectron,
           type: 'module',
         },
       }),
@@ -81,3 +88,4 @@ export default defineConfig(() => {
     },
   };
 });
+

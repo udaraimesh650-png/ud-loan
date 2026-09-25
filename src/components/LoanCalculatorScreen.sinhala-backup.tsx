@@ -39,6 +39,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       return null;
     }
 
+    // 0 - 2 years
     if (years <= currentTiers.tier1MaxYears) {
       return {
         maxLimit: currentTiers.tier1MaxLimit,
@@ -46,6 +47,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       };
     }
 
+    // More than 2 - 5 years
     if (years <= currentTiers.tier2MaxYears) {
       return {
         maxLimit: currentTiers.tier2MaxLimit,
@@ -53,6 +55,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       };
     }
 
+    // More than 5 years
     return {
       maxLimit: currentTiers.tier3MaxLimit,
       maxPeriodMonths: currentTiers.tier3MaxPeriodMonths,
@@ -85,6 +88,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       return;
     }
 
+    // Guarantee Loan
     if (typeId === 'guarantee-loan') {
       setInterestRate(found.defaultRate.toString());
       setTenureValue('');
@@ -92,6 +96,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       return;
     }
 
+    // Property Loan
     if (typeId === 'property-loan') {
       setTenureValue('15');
       setTenureUnit('years');
@@ -105,6 +110,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       return;
     }
 
+    // Other Loan Types
     setInterestRate(found.defaultRate.toString());
 
     if (found.defaultPeriodMonths) {
@@ -141,52 +147,21 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
 
   // ------------------------------------------------------------
   // BIRTHDAY / AGE 60 LIMIT
-  // YYYY/MM/DD
   // ------------------------------------------------------------
   const getMonthsUntilAge60 = (
     birthdayValue: string
   ): number | null => {
     if (!birthdayValue) return null;
 
-    const parts = birthdayValue.split('/');
+    const dob = new Date(`${birthdayValue}T00:00:00`);
 
-    if (parts.length !== 3) {
-      return null;
-    }
-
-    const year = Number(parts[0]);
-    const month = Number(parts[1]);
-    const day = Number(parts[2]);
-
-    if (
-      !Number.isInteger(year) ||
-      !Number.isInteger(month) ||
-      !Number.isInteger(day) ||
-      year < 1900 ||
-      month < 1 ||
-      month > 12 ||
-      day < 1 ||
-      day > 31
-    ) {
-      return null;
-    }
-
-    const dob = new Date(year, month - 1, day);
-
-    // Invalid calendar date check
-    // Example: 2020/02/31 is invalid
-    if (
-      dob.getFullYear() !== year ||
-      dob.getMonth() !== month - 1 ||
-      dob.getDate() !== day
-    ) {
+    if (Number.isNaN(dob.getTime())) {
       return null;
     }
 
     const today = new Date();
 
     const age60Date = new Date(dob);
-
     age60Date.setFullYear(
       age60Date.getFullYear() + 60
     );
@@ -259,6 +234,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       return 360;
     }
 
+    // Guarantee Loan
     if (selectedLoanType === 'guarantee-loan') {
       return (
         guaranteeLimits?.maxPeriodMonths ??
@@ -266,6 +242,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       );
     }
 
+    // Other Loan Types
     return (
       conditions[selectedLoanType]?.maxPeriodMonths ??
       360
@@ -320,6 +297,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
 
   // ------------------------------------------------------------
   // AUTOMATIC TENURE ADJUSTMENT
+  // When birthday changes or loan type changes
   // ------------------------------------------------------------
   useEffect(() => {
     if (!selectedLoanType) {
@@ -337,8 +315,9 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
     if (
       totalMonths > effectiveMaxMonths
     ) {
+      // Use months when exact maximum cannot be represented
+      // as whole years.
       setTenureUnit('months');
-
       setTenureValue(
         effectiveMaxMonths.toString()
       );
@@ -376,7 +355,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
         age60RemainingMonths <= 0
       ) {
         if (totalMonths > 0) {
-          return 'උපන් දිනය අනුව උපරිම ආපසු ගෙවීමේ කාලය මාස 0 කි.';
+          return 'Maximum repayment period based on birthday is 0 months.';
         }
       }
 
@@ -384,7 +363,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
         totalMonths >
         age60RemainingMonths
       ) {
-        return `උපන් දිනය අනුව උපරිම ආපසු ගෙවීමේ කාලය මාස ${age60RemainingMonths} කි.`;
+        return `Maximum repayment period based on birthday is ${age60RemainingMonths} months.`;
       }
     }
 
@@ -405,7 +384,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
         Number.isNaN(years) ||
         years < 0
       ) {
-        return 'කරුණාකර නිවැරදි සාමාජිකත්ව කාල සීමාවක් ඇතුළත් කරන්න.';
+        return 'à¶šà¶»à·”à¶«à·à¶šà¶» à¶±à·’à·€à·à¶»à¶¯à·’ à·ƒà·à¶¸à·à¶¢à·’à¶šà¶­à·Šà·€ à¶šà·à¶½ à·ƒà·“à¶¸à·à·€à¶šà·Š à¶‡à¶­à·”à·…à¶­à·Š à¶šà¶»à¶±à·Šà¶±.';
       }
 
       const limits =
@@ -422,16 +401,16 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
         principal >
         limits.maxLimit
       ) {
-        return `සාමාජිකත්ව කාලය අනුව උපරිම ණය සීමාව රු. ${limits.maxLimit.toLocaleString(
+        return `à·ƒà·à¶¸à·à¶¢à·’à¶šà¶­à·Šà·€ à¶šà·à¶½à¶º à¶…à¶±à·”à·€ à¶‹à¶´à¶»à·’à¶¸ à¶«à¶º à·ƒà·“à¶¸à·à·€ à¶»à·”. ${limits.maxLimit.toLocaleString(
           'en-US'
-        )} කි.`;
+        )} à¶šà·’.`;
       }
 
       if (
         totalMonths >
         limits.maxPeriodMonths
       ) {
-        return `සාමාජිකත්ව කාලය අනුව උපරිම ආපසු ගෙවීමේ කාලය මාස ${limits.maxPeriodMonths} කි.`;
+        return `à·ƒà·à¶¸à·à¶¢à·’à¶šà¶­à·Šà·€ à¶šà·¶½à¶º à¶…à¶±à·”à·€ à¶‹à¶´à¶»à·’à¶¸ à¶†à¶´à·ƒà·” à¶œà·™à·€à·“à¶¸à·š à¶šà·à¶½à¶º à¶¸à·à·ƒ ${limits.maxPeriodMonths} à¶šà·’.`;
       }
 
       return null;
@@ -446,9 +425,9 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
       principal >
         condition.maxLimit
     ) {
-      return `${condition.name} උපරිම සීමාව රු. ${condition.maxLimit.toLocaleString(
+      return `${condition.name} à¶‹à¶´à¶»à·’à¶¸ à·ƒà·“à¶¸à·à·€ à¶»à·”. ${condition.maxLimit.toLocaleString(
         'en-US'
-      )} කි.`;
+      )} à¶šà·’.`;
     }
 
     // ----------------------------------------------------------
@@ -465,7 +444,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
         .toFixed(1)
         .replace(/\.0$/, '');
 
-      return `${condition.name} උපරිම කාල සීමාව මාස ${condition.maxPeriodMonths} (${years} වසර) කි.`;
+      return `${condition.name} à¶‹à¶´à¶»à·’à¶¸ à¶šà·à¶½à·ƒà·“à¶¸à·à·€ à¶¸à·à·ƒ ${condition.maxPeriodMonths} (à·€à·ƒà¶» ${years}) à¶šà·’.`;
     }
 
     return null;
@@ -660,7 +639,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             <span>LOAN TYPE</span>
 
             <span className="text-xs font-semibold text-slate-500 normal-case">
-              (ණය වර්ගය)
+              (à¶«à¶º à·€à¶»à·Šà¶œà¶º)
             </span>
           </label>
 
@@ -720,38 +699,18 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
 
             <input
               id="input-birthday"
-              type="text"
-              inputMode="numeric"
+              type="date"
               value={birthday}
-              onChange={(e) => {
-                let value =
-                  e.target.value.replace(
-                    /[^0-9]/g,
-                    ''
-                  );
-
-                if (value.length > 8) {
-                  value = value.slice(0, 8);
-                }
-
-                if (value.length > 4) {
-                  value =
-                    value.slice(0, 4) +
-                    '/' +
-                    value.slice(4);
-                }
-
-                if (value.length > 7) {
-                  value =
-                    value.slice(0, 7) +
-                    '/' +
-                    value.slice(7);
-                }
-
-                setBirthday(value);
-              }}
-              placeholder="YYYY/MM/DD"
-              maxLength={10}
+              max={
+                new Date()
+                  .toISOString()
+                  .split('T')[0]
+              }
+              onChange={(e) =>
+                setBirthday(
+                  e.target.value
+                )
+              }
               className="w-full py-3 px-5 rounded-full bg-white text-slate-900 font-bold text-base border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
 
@@ -819,7 +778,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
                 <span className="w-2 h-2 rounded-full bg-slate-900 inline-block" />
 
                 <span>
-                  සාමාජිකත්ව කාල සීමාව
+                  à·ƒà·à¶¸à·à¶¢à·’à¶šà¶­à·Šà·€ à¶šà·à¶½ à·ƒà·“à¶¸à·à·€
                 </span>
 
                 <span className="text-xs font-semibold text-slate-500 normal-case">
@@ -862,7 +821,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
                     );
                   }
                 }}
-                placeholder="වසර ගණන ඇතුළත් කරන්න"
+                placeholder="à·€à·ƒà¶» à¶œà¶«à¶± à¶‡à¶­à·”à·…à¶­à·Š à¶šà¶»à¶±à·Šà¶±"
                 className="w-full py-3 px-5 rounded-full bg-white text-slate-900 font-bold text-base shadow-[inset_0_2px_4px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.04)] border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400"
               />
 
@@ -870,7 +829,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
               {guaranteeLimits && (
                 <div className="mt-1 p-3 rounded-2xl bg-sky-50 border border-sky-200 text-xs font-bold text-sky-900">
                   <div>
-                    උපරිම ණය මුදල:{' '}
+                    à¶‹à¶´à¶»à·’à¶¸ à¶«à¶º à¶¸à·”à¶¯à¶½:{' '}
                     <span className="font-black">
                       Rs.{' '}
                       {guaranteeLimits.maxLimit.toLocaleString(
@@ -880,7 +839,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
                   </div>
 
                   <div>
-                    උපරිම ආපසු ගෙවීමේ කාලය:{' '}
+                    à¶‹à¶´à¶»à·’à¶¸ à¶†à¶´à·ƒà·” à¶œà·™à·€à·“à¶¸à·š à¶šà·à¶½à¶º:{' '}
                     <span className="font-black">
                       {
                         guaranteeLimits.maxPeriodMonths
@@ -917,7 +876,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             <span>LOAN AMOUNT</span>
 
             <span className="text-xs font-semibold text-slate-500 normal-case">
-              (ණය මුදල)
+              (à¶«à¶º à¶¸à·”à¶¯à¶½)
             </span>
           </label>
 
@@ -968,7 +927,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             </span>
 
             <span className="text-xs font-semibold text-slate-500 normal-case">
-              (ආපසු ගෙවීමේ කාලය - වසර / මාස)
+              (à¶†à¶´à·ƒà·” à¶œà·™à·€à·“à¶¸à·š à¶šà·à¶½à¶º - à·€à·ƒà¶» / à¶¸à·à·ƒ)
             </span>
           </label>
 
@@ -1039,7 +998,8 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             effectiveMaxMonths <
               baseMaxMonths && (
               <div className="text-xs font-bold text-sky-700 px-2">
-                උපරිම කාල සීමාව:{' '}
+                Maximum period:
+                {' '}
                 {effectiveMaxMonths}{' '}
                 Months
               </div>
@@ -1056,7 +1016,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             </span>
 
             <span className="text-xs font-semibold text-slate-500 normal-case">
-              (වාර්ෂික පොලී අනුපාතිකය)
+              (à·€à·à¶»à·Šà¶‚à·‚à·’à¶š à¶´à¶½à·“ à¶…à¶±à·”à¶´à·à¶­à·’à¶šà¶º)
             </span>
           </label>
 
@@ -1106,7 +1066,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             </span>
 
             <span className="text-xs font-semibold text-slate-500 normal-case">
-              (මාසික මූලික වාරිකය)
+              (à¶¸à·à·ƒà·’à¶š à¶¸à·–à¶½à·’à¶š à·€àà¶»à·’à¶šà¶º)
             </span>
           </label>
 
@@ -1134,7 +1094,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             </span>
 
             <span className="text-xs font-semibold text-slate-500 normal-case">
-              (මාසික පොලී මුදල)
+              (à¶¸à·à·ƒà·’à¶š à¶´à·œà¶½à·“ à¶¸à·”à¶¯à¶½)
             </span>
           </label>
 
@@ -1162,7 +1122,7 @@ export const LoanCalculatorScreen: React.FC<LoanCalculatorScreenProps> = ({
             </span>
 
             <span className="text-xs font-semibold text-emerald-700 normal-case">
-              (මුළු මාසික වාරිකය)
+              (à¶¸à·”à·…à·” à¶¸à·à·ƒà·’à¶š à·€à·à¶»à·’à¶šà¶º)
             </span>
           </label>
 
