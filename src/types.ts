@@ -56,6 +56,7 @@ export interface LoanCalculationParams {
   loanType?: string;
   amount?: number;
   months?: number;
+  ageRemainingMonths?: number;
   balanceAfterDeduction?: number;
   bankDeductionsTotal?: number;
 }

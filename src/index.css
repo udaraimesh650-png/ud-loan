@@ -1,10 +1,12 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 html, body {
   touch-action: manipulation;
   -webkit-text-size-adjust: 100%;
+  font-family: "Noto Sans Sinhala", "Iskoola Pota", "Nirmala UI", "Segoe UI", sans-serif;
 }
 
 input, button, select, textarea {
   touch-action: manipulation;
+  font-family: inherit;
 }

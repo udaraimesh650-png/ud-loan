@@ -87,14 +87,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            CALCULATOR
+            CALCULATER
           </div>
         </h1>
       </div>
 
       {/* 3 Main Action Buttons with Professional Financial Theme */}
       <div className="w-full max-w-[340px] mx-auto flex flex-col gap-3.5 z-10 pb-10">
-        {/* 1. LOAN CALCULATOR BUTTON */}
+        {/* 1. LOAN CALCULATER BUTTON */}
         <button
           id="btn-nav-loan-calculator"
           onClick={() => onNavigate('loan-calculator')}
@@ -106,7 +106,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
             </div>
             <div className="flex flex-col text-left">
               <span className="font-black text-base sm:text-lg tracking-wider uppercase text-white leading-tight">
-                LOAN CALCULATOR
+                LOAN CALCULATER
               </span>
               <span className="text-[11px] font-semibold text-sky-200/90 tracking-normal mt-0.5">
                 මාසික වාරික හා පොලී ගණනය (EMI & Interest)
@@ -116,7 +116,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           <ChevronRight className="w-5 h-5 text-sky-300 group-hover:translate-x-1 transition-transform shrink-0 opacity-80 group-hover:opacity-100" />
         </button>
 
-        {/* 2. PAY SHEET CALCULATOR BUTTON */}
+        {/* 2. PAY SHEET CALCULATER BUTTON */}
         <button
           id="btn-nav-paysheet-calculator"
           onClick={() => onNavigate('paysheet-calculator')}
@@ -128,7 +128,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
             </div>
             <div className="flex flex-col text-left">
               <span className="font-black text-base sm:text-lg tracking-wider uppercase text-white leading-tight">
-                PAY SHEET CALCULATOR
+                PAY SHEET CALCULATER
               </span>
               <span className="text-[11px] font-semibold text-emerald-200/90 tracking-normal mt-0.5">
                 40% වැටුප් සීමාව හා ණය ධාරිතාව (40% Capacity)

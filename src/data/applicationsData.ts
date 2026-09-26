@@ -14,7 +14,7 @@ export const APPLICATIONS: ApplicationDocument[] = [
       'Two (2) permanent staff guarantors with pay slips',
       'Utility bill or proof of permanent address'
     ],
-    pdfPath: `${import.meta.env.BASE_URL}applications/guaranty-good-loan.pdf`
+pdfPath: '/applications/guaranty-good-loan.pdf'
   },
   {
     id: 'festival-loan',
@@ -29,7 +29,7 @@ export const APPLICATIONS: ApplicationDocument[] = [
       'Approval from Department Head / Section Supervisor',
       'Consent form for 10-12 equal monthly payroll deductions'
     ],
-    pdfPath: `${import.meta.env.BASE_URL}applications/festivel-loan.pdf`
+pdfPath: '/applications/festivel-loan.pdf'
   },
   {
     id: 'membership-application',
@@ -44,7 +44,7 @@ export const APPLICATIONS: ApplicationDocument[] = [
       'Nominee / Beneficiary details form',
       'Monthly share/welfare deduction authorization letter'
     ],
-    pdfPath: `${import.meta.env.BASE_URL}applications/membership.pdf`
+pdfPath: '/applications/membership.pdf'
   }
 ];
 
@@ -102,7 +102,7 @@ export const LOAN_CONDITIONS_MAP: Record<string, LoanConditionDetails> = {
   'property-loan': {
     id: 'property-loan',
     name: 'PROPERTY LOAN',
-    subtitle: 'දේපළ ණය',
+    subtitle: 'දේපොළ ණය',
     maxLimit: 5000000,
     maxLimitText: 'රු. 5,000,000',
     maxTenureText: 'වසර 25 / මාස 300 (25 Years)',
@@ -164,12 +164,12 @@ export const LOAN_TYPES = [
   {
     id: 'property-loan',
     name: 'PROPERTY LOAN',
-    subtitle: 'දේපළ ණය',
+    subtitle: 'දේපොළ ණය',
     defaultRate: 5,
     defaultPeriodMonths: 180,
     maxPeriodMonths: 300,
     maxLimit: 5000000,
-    description: 'දේපළ ණය පහසුකම (උපරිම රු. 5,000,000 | වසර 15 දක්වා 5% | වසර 15-20: 5.5% | වසර 20-25: 6%).'
+    description: 'දේපොළ ණය පහසුකම (උපරිම රු. 5,000,000 | වසර 15 දක්වා 5% | වසර 15-20: 5.5% | වසර 20-25: 6%).'
   },
   {
     id: 'spectacal-goods-loan',

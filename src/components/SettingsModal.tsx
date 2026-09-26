@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 useLoanConditions,
 EditableLoanCondition,
@@ -98,12 +98,12 @@ const current = prev[selectedLoanId];
     const years = (months / 12).toFixed(1);
 
     updated.maxTenureText =
-      'à¶¸à·à·ƒ ' + String(months) + ' (' + years + ' Years)';
+      'මාස ' + String(months) + ' (' + years + ' Years)';
   }
 
   if (field === 'maxLimit') {
     updated.maxLimitText =
-      'à¶»à·”. ' + Number(value).toLocaleString('en-US');
+      'රු. ' + Number(value).toLocaleString('en-US');
   }
 
   return {
@@ -174,7 +174,7 @@ const current = prev['guarantee-loan'];
   if (field === 'tier3MaxLimit') {
     updatedLoan.maxLimit = value;
     updatedLoan.maxLimitText =
-      'à¶»à·”. ' + Number(value).toLocaleString('en-US');
+      'රු. ' + Number(value).toLocaleString('en-US');
   }
 
   if (field === 'tier3MaxPeriodMonths') {
@@ -184,7 +184,7 @@ const current = prev['guarantee-loan'];
     updatedLoan.maxPeriodMonths = months;
     updatedLoan.defaultPeriodMonths = months;
     updatedLoan.maxTenureText =
-      'à¶¸à·à·ƒ ' +
+      'මාස ' +
       String(months) +
       ' (' +
       years +
@@ -205,7 +205,7 @@ const trimmedName = newLoanType.name.trim();
 
 
 if (!trimmedName) {
-  setStatusMessage('âš  Please enter a loan type name.');
+  setStatusMessage('⚠ Please enter a loan type name.');
   return;
 }
 
@@ -218,7 +218,7 @@ const id =
 
 if (draftConditions[id]) {
   setStatusMessage(
-    'âš  A loan type with this name already exists.'
+    '⚠ A loan type with this name already exists.'
   );
   return;
 }
@@ -239,9 +239,9 @@ const newCondition: EditableLoanCondition = {
   maxPeriodMonths: months,
   maxLimit: maxLimit,
   maxLimitText:
-    'à¶»à·”. ' + maxLimit.toLocaleString('en-US'),
+    'රු. ' + maxLimit.toLocaleString('en-US'),
   maxTenureText:
-    'à¶¸à·à·ƒ ' +
+    'මාස ' +
     String(months) +
     ' (' +
     years +
@@ -270,7 +270,7 @@ setNewLoanType({
 });
 
 setStatusMessage(
-  'âœ“ New loan type added. Click Save Conditions.'
+  '✓ New loan type added. Click Save Conditions.'
 );
 
 
@@ -288,7 +288,7 @@ const defaultLoanIds = Object.keys(
 
 if (defaultLoanIds.includes(activeLoan.id)) {
   setStatusMessage(
-    'âš  Default loan types cannot be deleted. You can edit their conditions.'
+    '⚠ Default loan types cannot be deleted. You can edit their conditions.'
   );
   return;
 }
@@ -300,22 +300,14 @@ setDraftConditions((prev) => {
 });
 
 setSelectedLoanId('festivel-loan');
-setStatusMessage('âœ“ Custom loan type removed.');
+setStatusMessage('✓ Custom loan type removed.');
 
 
 };
 
 const handleSave = () => {
 saveConditions(draftConditions);
-
-setStatusMessage(
-  'âœ“ Loan conditions saved successfully.'
-);
-
-setTimeout(() => {
-  setStatusMessage('');
-  onClose();
-}, 500);
+onClose();
 };
 
 const handleReset = () => {
@@ -345,7 +337,7 @@ if (!resetConditions[selectedLoanId]) {
 }
 
 setStatusMessage(
-  'âœ“ Default loan conditions restored. Custom loans were kept.'
+  '✓ Default loan conditions restored. Custom loans were kept.'
 );
 
 
@@ -417,7 +409,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
 
     {statusMessage && (
       <div className="mx-4 sm:mx-6 mt-4 flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3">
-        {statusMessage.startsWith('âš ') ? (
+        {statusMessage.startsWith('⚠') ? (
           <AlertCircle className="w-4 h-4 text-amber-300 shrink-0" />
         ) : (
           <Check className="w-4 h-4 text-emerald-300 shrink-0" />
@@ -872,7 +864,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                         </div>
 
                         <p className="text-[11px] text-slate-400 mt-1">
-                          à·ƒà·à¶¸à·à¶¢à·’à¶šà¶­à·Šà·€ à¶šà·à¶½à¶º à¶…à¶±à·”à·€ à¶‹à¶´à¶»à·’à¶¸ à¶«à¶º à¶¸à·”à¶¯à¶½ à·ƒà·„ à¶‹à¶´à¶»à·’à¶¸ à¶œà·™à·€à·“à¶¸à·Š à¶šà·à¶½à¶º à¶¸à·™à¶­à·à¶±à·’à¶±à·Š configure à¶šà¶»à¶±à·Šà¶±.
+                          සාමාජිකත්ව කාලය අනුව උපරිම ණය මුදල සහ උපරිම ගෙවීම් කාලය මෙතැනින් configure කරන්න.
                         </p>
                       </div>
 
@@ -883,7 +875,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                           <div className="flex items-center justify-between gap-2 mb-4">
                             <div>
                               <div className="text-sm font-black text-white">
-                                Tier 1 â€” 0â€“2 Years
+                                Tier 1 — 0–2 Years
                               </div>
 
                               <div className="text-[10px] text-slate-400 mt-1">
@@ -970,7 +962,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                           <div className="flex items-center justify-between gap-2 mb-4">
                             <div>
                               <div className="text-sm font-black text-white">
-                                Tier 2 â€” &gt;2â€“5 Years
+                                Tier 2 — &gt;2–5 Years
                               </div>
 
                               <div className="text-[10px] text-slate-400 mt-1">
@@ -1057,7 +1049,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                           <div className="flex items-center justify-between gap-2 mb-4">
                             <div>
                               <div className="text-sm font-black text-white">
-                                Tier 3 â€” &gt;5 Years
+                                Tier 3 — &gt;5 Years
                               </div>
 
                               <div className="text-[10px] text-slate-400 mt-1">
@@ -1131,7 +1123,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
 
                             <div className="rounded-xl bg-white/5 p-3 text-slate-200">
                               <span className="text-emerald-300">
-                                0â€“{activeLoan.guaranteeTiers.tier1MaxYears} Years
+                                0–{activeLoan.guaranteeTiers.tier1MaxYears} Years
                               </span>
 
                               <br />
@@ -1150,7 +1142,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
 
                             <div className="rounded-xl bg-white/5 p-3 text-slate-200">
                               <span className="text-cyan-300">
-                                &gt;{activeLoan.guaranteeTiers.tier1MaxYears}â€“
+                                &gt;{activeLoan.guaranteeTiers.tier1MaxYears}–
                                 {activeLoan.guaranteeTiers.tier2MaxYears}{' '}
                                 Years
                               </span>
@@ -1283,7 +1275,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                           loan.guaranteeTiers && (
                             <div className="text-[10px] text-cyan-300 block mt-1">
 
-                              0â€“{loan.guaranteeTiers.tier1MaxYears}
+                              0–{loan.guaranteeTiers.tier1MaxYears}
                               y: Rs.{' '}
                               {loan.guaranteeTiers.tier1MaxLimit.toLocaleString(
                                 'en-US'
@@ -1298,7 +1290,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                               {' | '}
 
                               &gt;
-                              {loan.guaranteeTiers.tier1MaxYears}â€“
+                              {loan.guaranteeTiers.tier1MaxYears}–
                               {loan.guaranteeTiers.tier2MaxYears}
                               y: Rs.{' '}
                               {loan.guaranteeTiers.tier2MaxLimit.toLocaleString(
@@ -1344,7 +1336,7 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
                       </td>
 
                       <td className="px-4 py-3 text-[11px] text-slate-400 max-w-xs">
-                        {loan.extraNote || 'â€”'}
+                        {loan.extraNote || '—'}
                       </td>
 
                     </tr>
@@ -1382,15 +1374,15 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
             <div className="space-y-3 text-sm text-slate-300 leading-6">
 
               <p>
-                à¶¸à·™à¶¸ Settings section à¶‘à¶šà·™à¶±à·Š application à¶‘à¶šà·š loan conditions à·€à·™à¶±à·ƒà·Š à¶šà¶» save à¶šà¶»à¶±à·Šà¶± à¶´à·”à·…à·”à·€à¶±à·Š.
+                මෙම Settings section එකෙන් application එකේ loan conditions වෙනස් කර save කරන්න පුළුවන්.
               </p>
 
               <p>
-                Guarantee Loan à·ƒà¶³à·„à· à·ƒà·à¶¸à·à¶¢à·’à¶šà¶­à·Šà·€ à¶šà·à¶½ à·ƒà·“à¶¸à·à·€ à¶…à¶±à·”à·€ à·€à·™à¶±à·ƒà·Š à·€à¶± maximum loan limit à·ƒà·„ repayment period à¶¸à·™à¶­à·à¶±à·’à¶±à·Š configure à¶šà·… à·„à·à¶š.
+                Guarantee Loan සඳහා සාමාජිකත්ව කාල සීමාව අනුව වෙනස් වන maximum loan limit සහ repayment period මෙතැනින් configure කළ හැක.
               </p>
 
               <p>
-                Save Conditions à¶šà·’à¶»à·“à¶¸à·™à¶±à·Š à¶´à·ƒà·”à·€ calculator screens à·€à¶½à¶§ à¶‘à¶¸ conditions à¶·à·à·€à·’à¶­à· à·€à·š.
+                Save Conditions කිරීමෙන් පසුව calculator screens වලට එම conditions භාවිතා වේ.
               </p>
 
             </div>
@@ -1409,15 +1401,15 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
             <div className="text-xs text-slate-300 leading-6">
 
               <p>
-                Tier 1 maximum years value à¶‘à¶šà¶§ à¶…à¶©à·” à·„à· à·ƒà¶¸à·à¶± membership period à¶‘à¶š Tier 1 à¶½à·™à·ƒ à·ƒà¶½à¶šà¶ºà·’.
+                Tier 1 maximum years value එකට අඩු හෝ සමාන membership period එක Tier 1 ලෙස සලකයි.
               </p>
 
               <p className="mt-2">
-                Tier 1 maximum years à¶‘à¶šà¶§ à·€à¶©à· à·€à·à¶©à·’ à·ƒà·„ Tier 2 maximum years à¶‘à¶šà¶§ à¶…à¶©à·” à·„à· à·ƒà¶¸à·à¶± membership period à¶‘à¶š Tier 2 à¶½à·™à·ƒ à·ƒà¶½à¶šà¶ºà·’.
+                Tier 1 maximum years එකට වඩා වැඩි සහ Tier 2 maximum years එකට අඩු හෝ සමාන membership period එක Tier 2 ලෙස සලකයි.
               </p>
 
               <p className="mt-2">
-                Tier 2 maximum years à¶‘à¶šà¶§ à·€à¶©à· à·€à·à¶©à·’ membership period à·ƒà¶³à·„à· Tier 3 conditions à¶·à·à·€à·’à¶­à· à·€à·š.
+                Tier 2 maximum years එකට වඩා වැඩි membership period සඳහා Tier 3 conditions භාවිතා වේ.
               </p>
 
             </div>
@@ -1468,4 +1460,3 @@ return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center
 };
 
 export default SettingsModal;
-

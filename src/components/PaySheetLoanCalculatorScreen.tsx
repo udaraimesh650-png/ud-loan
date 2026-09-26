@@ -10,6 +10,7 @@ interface PaySheetLoanCalculatorScreenProps {
   initialLoanType?: string;
   initialAmount?: number;
   initialMonths?: number;
+  ageRemainingMonths?: number;
   balanceAfterDeduction?: number;
   bankDeductionsTotal?: number;
 }
@@ -45,6 +46,7 @@ export const PaySheetLoanCalculatorScreen: React.FC<PaySheetLoanCalculatorScreen
   initialLoanType = '',
   initialAmount = 0,
   initialMonths = 0,
+  ageRemainingMonths,
   balanceAfterDeduction = 0,
   bankDeductionsTotal,
 }) => {
@@ -100,25 +102,43 @@ export const PaySheetLoanCalculatorScreen: React.FC<PaySheetLoanCalculatorScreen
   // Selected Loan Configuration (Max Months, Rate, Max Limit)
   const currentLoanConfig = useMemo(() => {
     if (!selectedLoanType) return null;
+
     const cond = conditions[selectedLoanType];
     if (!cond) return null;
 
-    if (selectedLoanType === 'property-loan') {
-      const dynamicRate = getDynamicPropertyLoanRate(180, cond.propertyTiers);
-      return {
-        maxMonths: 180,
-        rate: dynamicRate,
-        name: cond.name,
-        maxLimit: cond.maxLimit,
-      };
-    }
+    const normalMaxMonths =
+      selectedLoanType === 'property-loan'
+        ? 180
+        : cond.maxPeriodMonths;
+
+    const maxMonths =
+      ageRemainingMonths &&
+      ageRemainingMonths > 0
+        ? Math.min(
+            normalMaxMonths,
+            ageRemainingMonths
+          )
+        : normalMaxMonths;
+
+    const rate =
+      selectedLoanType === 'property-loan'
+        ? getDynamicPropertyLoanRate(
+            maxMonths,
+            cond.propertyTiers
+          )
+        : cond.defaultRate;
+
     return {
-      maxMonths: cond.maxPeriodMonths,
-      rate: cond.defaultRate,
+      maxMonths,
+      rate,
       name: cond.name,
       maxLimit: cond.maxLimit,
     };
-  }, [selectedLoanType, conditions]);
+  }, [
+    selectedLoanType,
+    conditions,
+    ageRemainingMonths,
+  ]);
 
   // Reachable Loan Amount based on balanceAfterDeduction, current loan type's max months and rate:
   const reachableLoanAmount = useMemo(() => {
@@ -137,52 +157,88 @@ export const PaySheetLoanCalculatorScreen: React.FC<PaySheetLoanCalculatorScreen
   // Handle loan type selection
   const handleLoanTypeChange = (typeId: string) => {
     setSelectedLoanType(typeId);
+
     if (!typeId) {
       setInterestRate('');
       return;
     }
+
     const cond = conditions[typeId];
     if (!cond) return;
 
-    if (typeId === 'property-loan') {
-      setTenureValue('15');
-      setTenureUnit('years');
-      const dynamicRate = getDynamicPropertyLoanRate(180, cond.propertyTiers);
-      setInterestRate(dynamicRate.toString());
-      if (balanceAfterDeduction > 0) {
-        const reachable = calculateReachableLoanAmount(balanceAfterDeduction, dynamicRate, 180);
-        const limit = cond.maxLimit || 5000000;
-        const finalAmt = Math.min(limit, reachable);
-        if (finalAmt > 0) {
-          setLoanAmount(finalAmt.toLocaleString('en-US'));
-        }
-      }
-    } else {
-      setInterestRate(cond.defaultRate.toString());
-      setTenureValue(cond.maxPeriodMonths.toString());
-      setTenureUnit('months');
-      if (balanceAfterDeduction > 0) {
-        const reachable = calculateReachableLoanAmount(
+    const normalMaxMonths =
+      typeId === 'property-loan'
+        ? 180
+        : cond.maxPeriodMonths;
+
+    const effectiveMonths =
+      ageRemainingMonths &&
+      ageRemainingMonths > 0
+        ? Math.min(
+            normalMaxMonths,
+            ageRemainingMonths
+          )
+        : normalMaxMonths;
+
+    const effectiveRate =
+      typeId === 'property-loan'
+        ? getDynamicPropertyLoanRate(
+            effectiveMonths,
+            cond.propertyTiers
+          )
+        : cond.defaultRate;
+
+    setInterestRate(effectiveRate.toString());
+    setTenureValue(effectiveMonths.toString());
+    setTenureUnit('months');
+
+    if (balanceAfterDeduction > 0) {
+      const reachable =
+        calculateReachableLoanAmount(
           balanceAfterDeduction,
-          cond.defaultRate,
-          cond.maxPeriodMonths
+          effectiveRate,
+          effectiveMonths
         );
-        const finalAmt = cond.maxLimit && reachable > cond.maxLimit ? cond.maxLimit : reachable;
-        if (finalAmt > 0) {
-          setLoanAmount(finalAmt.toLocaleString('en-US'));
-        }
+
+      const finalAmt =
+        cond.maxLimit &&
+        reachable > cond.maxLimit
+          ? cond.maxLimit
+          : reachable;
+
+      if (finalAmt > 0) {
+        setLoanAmount(
+          finalAmt.toLocaleString('en-US')
+        );
       }
     }
   };
-
   // Calculate tenure in total months
+  // Age-60 limit is always preserved when available.
   const totalMonths = useMemo(() => {
     const val = parseFloat(tenureValue) || 0;
-    if (tenureUnit === 'years') {
-      return Math.round(val * 12);
+
+    const requestedMonths =
+      tenureUnit === 'years'
+        ? Math.round(val * 12)
+        : Math.round(val);
+
+    if (
+      ageRemainingMonths &&
+      ageRemainingMonths > 0
+    ) {
+      return Math.min(
+        requestedMonths,
+        ageRemainingMonths
+      );
     }
-    return Math.round(val);
-  }, [tenureValue, tenureUnit]);
+
+    return requestedMonths;
+  }, [
+    tenureValue,
+    tenureUnit,
+    ageRemainingMonths,
+  ]);
 
   // For PROPERTY LOAN: Dynamically set interest rate based on tenure
   useEffect(() => {
