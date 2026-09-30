@@ -6,6 +6,7 @@ import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
+    base: process.env.DESKTOP_BUILD === 'true' ? './' : '/ud-loan/',
     plugins: [
       react(),
       tailwindcss(),

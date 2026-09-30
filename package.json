@@ -1,7 +1,7 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "netlify-build": "npm install --legacy-peer-deps && npm run build"
+    "netlify-build": "npm install --legacy-peer-deps && npm run build",
+    "deploy": "npm run build && gh-pages -d dist",
+    "desktop": "set DESKTOP_BUILD=true&& npm run build && electron-builder --win"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.2",
@@ -42,5 +44,23 @@
     "tsx": "^4.21.0",
     "typescript": "^7.0.2",
     "vite-plugin-pwa": "^1.3.0"
+  },
+  "main": "electron.cjs",
+  "productName": "UD Loan Calculator",
+  "build": {
+    "appId": "com.udara.udloancalculator",
+    "productName": "UD Loan Calculator",
+    "directories": {
+      "output": "release-desktop"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "resources/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "artifactName": "UD-Loan-Calculator-v${version}-Setup.${ext}"
   }
 }

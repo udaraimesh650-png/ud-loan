@@ -140,19 +140,6 @@ export const PaySheetLoanCalculatorScreen: React.FC<PaySheetLoanCalculatorScreen
     ageRemainingMonths,
   ]);
 
-  // Reachable Loan Amount based on balanceAfterDeduction, current loan type's max months and rate:
-  const reachableLoanAmount = useMemo(() => {
-    if (balanceAfterDeduction <= 0 || !currentLoanConfig) return 0;
-    const calculated = calculateReachableLoanAmount(
-      balanceAfterDeduction,
-      currentLoanConfig.rate,
-      currentLoanConfig.maxMonths
-    );
-    if (currentLoanConfig.maxLimit && calculated > currentLoanConfig.maxLimit) {
-      return currentLoanConfig.maxLimit;
-    }
-    return calculated;
-  }, [balanceAfterDeduction, currentLoanConfig]);
 
   // Handle loan type selection
   const handleLoanTypeChange = (typeId: string) => {
@@ -240,6 +227,66 @@ export const PaySheetLoanCalculatorScreen: React.FC<PaySheetLoanCalculatorScreen
     ageRemainingMonths,
   ]);
 
+  // Reachable Loan Amount based on the currently selected repayment period.
+  const reachableLoanAmount = useMemo(() => {
+    if (
+      balanceAfterDeduction <= 0 ||
+      !currentLoanConfig ||
+      totalMonths <= 0
+    ) {
+      return 0;
+    }
+
+    const effectiveRate =
+      selectedLoanType === 'property-loan'
+        ? getDynamicPropertyLoanRate(
+            totalMonths,
+            conditions['property-loan']?.propertyTiers
+          )
+        : currentLoanConfig.rate;
+
+    const calculated = calculateReachableLoanAmount(
+      balanceAfterDeduction,
+      effectiveRate,
+      totalMonths
+    );
+
+    if (
+      currentLoanConfig.maxLimit &&
+      calculated > currentLoanConfig.maxLimit
+    ) {
+      return currentLoanConfig.maxLimit;
+    }
+
+    return calculated;
+  }, [
+    balanceAfterDeduction,
+    currentLoanConfig,
+    totalMonths,
+    selectedLoanType,
+    conditions,
+  ]);
+
+  // Keep Loan Amount synchronized with the live reachable amount
+  // whenever Loan Type, Years or Months changes.
+  useEffect(() => {
+    if (
+      selectedLoanType &&
+      balanceAfterDeduction > 0 &&
+      totalMonths > 0
+    ) {
+      setLoanAmount(
+        reachableLoanAmount > 0
+          ? Math.round(reachableLoanAmount).toLocaleString('en-US')
+          : ''
+      );
+    }
+  }, [
+    selectedLoanType,
+    totalMonths,
+    balanceAfterDeduction,
+    reachableLoanAmount,
+  ]);
   // For PROPERTY LOAN: Dynamically set interest rate based on tenure
   useEffect(() => {
     if (selectedLoanType === 'property-loan' && totalMonths > 0) {

@@ -10,3 +10,14 @@ coverage/
 ud-loan-release.jks
 
 release/
+
+# Local/generated files
+release-desktop/
+public_backup/
+temp-pdfs/
+*.backup
+*.backup.*
+*.backup.tsx
+*.backup.css
+*.txt
+android/.idea/
