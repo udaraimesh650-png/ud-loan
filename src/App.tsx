@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { ScreenType, LoanCalculationParams } from './types';
 import { HomeScreen } from './components/HomeScreen';
 import { LoanCalculatorScreen } from './components/LoanCalculatorScreen';
@@ -6,6 +6,7 @@ import { PaySheetCalculatorScreen } from './components/PaySheetCalculatorScreen'
 import { PaySheetLoanCalculatorScreen } from './components/PaySheetLoanCalculatorScreen';
 import { ApplicationsScreen } from './components/ApplicationsScreen';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { UpdateChecker } from './components/UpdateChecker';
 import { Smartphone, Grid } from 'lucide-react';
 import { App as CapacitorApp } from '@capacitor/app';
 
@@ -403,6 +404,9 @@ UD </div>
     </button>
   </div>
 
+  {/* Auto Update Checker */}
+  <UpdateChecker />
+
   {/* Offline Mode Alert */}
   <OfflineIndicator />
 </div>
@@ -410,3 +414,4 @@ UD </div>
 
 );
 }
+

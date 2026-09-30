@@ -1,0 +1,62 @@
+﻿name: Android Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Restore signing keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ud-loan-release.jks
+
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
+
+      - name: Build signed release APK
+        working-directory: android
+        env:
+          UD_STORE_PASSWORD: ${{ secrets.UD_STORE_PASSWORD }}
+          UD_KEY_PASSWORD: ${{ secrets.UD_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+
+      - name: Prepare APK
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          cp android/app/build/outputs/apk/release/app-release.apk "UD-Loan-Calculator-v${VERSION}.apk"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: UD-Loan-Calculator-v*.apk
+          generate_release_notes: true
