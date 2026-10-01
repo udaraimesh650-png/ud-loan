@@ -44,6 +44,22 @@ function bytesToMB(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1);
 }
 
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
 export function UpdateChecker() {
   const [latestVersion, setLatestVersion] = useState('');
   const [downloadUrl, setDownloadUrl] = useState('');
@@ -57,7 +73,9 @@ export function UpdateChecker() {
 
   useEffect(() => {
     const checkForUpdate = async () => {
-      if (!Capacitor.isNativePlatform()) return;
+      if (!Capacitor.isNativePlatform()) {
+        return;
+      }
 
       try {
         const appInfo = await CapacitorApp.getInfo();
@@ -72,21 +90,34 @@ export function UpdateChecker() {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          console.error(
+            'GitHub update check failed:',
+            response.status,
+            response.statusText
+          );
+          return;
+        }
 
         const release: GitHubRelease = await response.json();
 
-        if (!isNewerVersion(release.tag_name, currentVersion)) return;
+        if (!isNewerVersion(release.tag_name, currentVersion)) {
+          return;
+        }
 
         const apk = release.assets.find((asset) =>
           asset.name.toLowerCase().endsWith('.apk')
         );
 
-        if (!apk) return;
+        if (!apk) {
+          console.error('No APK found in latest GitHub release.');
+          return;
+        }
 
         setLatestVersion(release.tag_name.replace(/^v/i, ''));
         setDownloadUrl(apk.browser_download_url);
         setApkSize(bytesToMB(apk.size));
+
         setReleaseNotes(
           release.body?.trim() ||
             '• යෙදුමේ ක්‍රියාකාරීත්වය වැඩිදියුණු කර ඇත.\n• සුළු දෝෂ නිවැරදි කර ඇත.'
@@ -94,7 +125,7 @@ export function UpdateChecker() {
 
         setShowUpdate(true);
       } catch (error) {
-        console.log('Update check failed:', error);
+        console.error('Update check failed:', error);
       }
     };
 
@@ -102,7 +133,9 @@ export function UpdateChecker() {
   }, []);
 
   const downloadAndInstall = async () => {
-    if (!downloadUrl || isDownloading) return;
+    if (!downloadUrl || isDownloading) {
+      return;
+    }
 
     setIsDownloading(true);
     setDownloadProgress(0);
@@ -119,6 +152,9 @@ export function UpdateChecker() {
         directory: Directory.Cache,
         path: fileName,
       });
+
+      console.log('APK download URL:', downloadUrl);
+      console.log('APK destination URI:', uriResult.uri);
 
       progressListener = await FileTransfer.addListener(
         'progress',
@@ -146,24 +182,30 @@ export function UpdateChecker() {
         readTimeout: 120000,
       });
 
-      await progressListener.remove();
-      progressListener = null;
+      if (progressListener) {
+        await progressListener.remove();
+        progressListener = null;
+      }
 
       setDownloadProgress(100);
 
       const apkPath = result.path || uriResult.uri;
+
+      console.log('APK downloaded successfully:', apkPath);
 
       await FileOpener.open({
         filePath: apkPath,
         contentType: 'application/vnd.android.package-archive',
         openWithDefault: true,
       });
+
+      console.log('Android APK installer requested.');
     } catch (error) {
       console.error('Update download/install failed:', error);
 
-      setDownloadError(
-        'යාවත්කාලීනය බාගත කිරීම හෝ ස්ථාපනය ආරම්භ කිරීම අසාර්ථක විය. නැවත උත්සාහ කරන්න.'
-      );
+      const message = getErrorMessage(error);
+
+      setDownloadError(`ERROR: ${message}`);
       setIsDownloading(false);
     } finally {
       if (progressListener) {
@@ -176,7 +218,9 @@ export function UpdateChecker() {
     }
   };
 
-  if (!showUpdate) return null;
+  if (!showUpdate) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 px-5">
@@ -221,7 +265,9 @@ export function UpdateChecker() {
             <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200">
               <div
                 className="h-full rounded-full bg-sky-600 transition-all duration-300"
-                style={{ width: `${downloadProgress}%` }}
+                style={{
+                  width: `${downloadProgress}%`,
+                }}
               />
             </div>
 
@@ -232,7 +278,7 @@ export function UpdateChecker() {
         )}
 
         {downloadError && (
-          <div className="mt-4 rounded-xl bg-red-50 p-3 text-center text-sm font-semibold text-red-600">
+          <div className="mt-4 max-h-32 overflow-y-auto rounded-xl bg-red-50 p-3 text-left text-xs font-semibold text-red-600">
             {downloadError}
           </div>
         )}
